@@ -1,17 +1,19 @@
-<!-- <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-?> -->
 <?php 
-
 include 'connect.php';
 
-if(isset($_POST['signUp'])){
-    $firstName=$_POST['fName'];
-    $lastName=$_POST['lName'];
-    $email=$_POST['email'];
-    $password=$_POST['password'];
-    $password=md5($password);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['signUp'])) {
+        $firstName = $_POST['fName'] ?? '';
+        $lastName = $_POST['lName'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $password = $_POST['password'] ?? '';
+
+        if (empty($password) || empty($email) || empty($firstName) || empty($lastName)) {
+            echo "Please fill in all fields.";
+            exit();
+        }
+
+        $password = md5($password);
 
      $checkEmail="SELECT * From users where email='$email'";
      $result=$conn->query($checkEmail);
@@ -32,10 +34,16 @@ if(isset($_POST['signUp'])){
 
 }
 
-if(isset($_POST['signIn'])){
-   $email=$_POST['email'];
-   $password=$_POST['password'];
-   $password=md5($password) ;
+if (isset($_POST['signIn'])) {
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
+
+    if (empty($password) || empty($email)) {
+        echo "Please fill in all fields.";
+        exit();
+    }
+
+    $password = md5($password);
    
    $sql="SELECT * FROM users WHERE email='$email' and password='$password'";
    $result=$conn->query($sql);
@@ -50,5 +58,6 @@ if(isset($_POST['signIn'])){
     echo "Not Found, Incorrect Email or Password";
    }
 
+}
 }
 ?>
